@@ -183,7 +183,7 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
       : Math.min(sbPlayer.chips, this.config.smallBlind);
     sbPlayer.chips -= sbAmount;
     sbPlayer.bet = sbAmount;
-    this.potManager.addBet(sbPlayer.id, sbAmount);
+    this.potManager.addToPot(sbPlayer, sbAmount);
 
     this.emit('blind:posted', {
       playerId: sbPlayer.id,
@@ -199,7 +199,7 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
     bbPlayer.chips -= bbAmount;
     bbPlayer.bet = bbAmount;
     bbPlayer.hasOption = true; // BB has option to raise
-    this.potManager.addBet(bbPlayer.id, bbAmount);
+    this.potManager.addToPot(bbPlayer, bbAmount);
 
     this.emit('blind:posted', {
       playerId: bbPlayer.id,
@@ -307,7 +307,7 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
           : Math.min(callAmount, player.chips);
         player.chips -= actualCall;
         player.bet += actualCall;
-        this.potManager.addBet(player.id, actualCall);
+        this.potManager.addToPot(player, actualCall);
 
         if (player.chips <= 0 && !this.config.allowNegativeChips) {
           player.state = PlayerState.ALL_IN;
@@ -336,7 +336,7 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
 
         player.chips -= raiseAmount;
         player.bet += raiseAmount;
-        this.potManager.addBet(player.id, raiseAmount);
+        this.potManager.addToPot(player, raiseAmount);
 
         if (player.chips === 0) {
           player.state = PlayerState.ALL_IN;
@@ -365,7 +365,7 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
         player.chips = 0;
         player.bet += allInAmount;
         player.state = PlayerState.ALL_IN;
-        this.potManager.addBet(player.id, allInAmount);
+        this.potManager.addToPot(player, allInAmount);
 
         this.emit('player:all-in', {
           playerId: player.id,

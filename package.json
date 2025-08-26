@@ -1,6 +1,6 @@
 {
   "name": "@jkraybill/triple-draw-manager",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Championship-grade single-table Deuce-to-Seven Triple Draw Lowball engine for Node.js with comprehensive position information and integer-validated betting",
   "main": "dist/index.cjs",
   "module": "packages/core/src/index.js",
