@@ -36,3 +36,7 @@ coverage/
 # Package manager
 yarn.lock
 pnpm-lock.yaml
+
+# Project-specific
+CLAUDE.md
+ABOUT-JK.md
