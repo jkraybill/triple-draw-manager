@@ -178,10 +178,6 @@ npm run test:coverage   # Coverage report
 
 MIT
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
 ## Credits
 
-Based on the architecture of [poker-game-manager](https://github.com/jkraybill/poker-game-manager) by JK Raybill.
+Based on the architecture of [poker-game-manager](https://github.com/jkraybill/poker-game-manager).
