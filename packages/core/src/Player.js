@@ -89,10 +89,14 @@ export class Player extends WildcardEventEmitter {
    * @param {number} amount - New chip amount
    */
   set chips(amount) {
-    // Ensure chips are always integers
-    const intAmount = ensureInteger(amount, 'chips');
+    // Allow negative values to pass through (ensureInteger might convert negative to 0)
+    const numAmount = typeof amount === 'string' ? Number(amount) : amount;
+    const intAmount = Math.round(numAmount);
     const oldAmount = this._chips;
-    this._chips = Math.max(0, intAmount); // Never go negative
+
+    // Allow negative chips if explicitly set (for allowNegativeChips mode)
+    // Only clamp to 0 if the value is positive or zero
+    this._chips = intAmount;
 
     if (oldAmount !== this._chips) {
       this.emit('chips:changed', {

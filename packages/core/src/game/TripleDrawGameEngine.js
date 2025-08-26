@@ -181,7 +181,14 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
     const sbAmount = this.config.allowNegativeChips
       ? this.config.smallBlind
       : Math.min(sbPlayer.chips, this.config.smallBlind);
-    sbPlayer.chips -= sbAmount;
+
+    // Directly manipulate _chips to bypass the setter's validation when allowing negative
+    if (this.config.allowNegativeChips) {
+      sbPlayer._chips = (sbPlayer._chips || 0) - sbAmount;
+    } else {
+      sbPlayer.chips -= sbAmount;
+    }
+
     sbPlayer.bet = sbAmount;
     this.potManager.addToPot(sbPlayer, sbAmount);
 
@@ -196,7 +203,14 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
     const bbAmount = this.config.allowNegativeChips
       ? this.config.bigBlind
       : Math.min(bbPlayer.chips, this.config.bigBlind);
-    bbPlayer.chips -= bbAmount;
+
+    // Directly manipulate _chips to bypass the setter's validation when allowing negative
+    if (this.config.allowNegativeChips) {
+      bbPlayer._chips = (bbPlayer._chips || 0) - bbAmount;
+    } else {
+      bbPlayer.chips -= bbAmount;
+    }
+
     bbPlayer.bet = bbAmount;
     bbPlayer.hasOption = true; // BB has option to raise
     this.potManager.addToPot(bbPlayer, bbAmount);
@@ -305,7 +319,14 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
         const actualCall = this.config.allowNegativeChips
           ? callAmount
           : Math.min(callAmount, player.chips);
-        player.chips -= actualCall;
+
+        // Directly manipulate _chips to bypass the setter's validation when allowing negative
+        if (this.config.allowNegativeChips) {
+          player._chips = (player._chips || 0) - actualCall;
+        } else {
+          player.chips -= actualCall;
+        }
+
         player.bet += actualCall;
         this.potManager.addToPot(player, actualCall);
 

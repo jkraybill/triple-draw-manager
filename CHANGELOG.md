@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.1.4] - 2025-01-26
+
+### Fixed
+- Fixed critical allowNegativeChips flag not working properly
+  - Players can now correctly go negative when `allowNegativeChips: true`
+  - Maintains perfect chip conservation (zero-sum) in simulations
+  - Directly manipulates chip values to bypass validation when needed
+  - Fixed blind posting and call actions to respect the flag
+
+### Added
+- Comprehensive tests for negative chip scenarios (3 new tests)
+- Validation of chip conservation in long-running simulations
+
+### Impact
+- This fix is critical for accurate position analysis in simulations
+- Prevents phantom chip creation that was invalidating statistical analysis
+- Ensures true zero-sum poker economics
+
 ## [1.1.3] - 2025-01-26
 
 ### Fixed
