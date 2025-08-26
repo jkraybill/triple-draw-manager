@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.1.2] - 2025-01-26
+
+### Fixed
+- Fixed critical PotManager method name mismatch in TripleDrawGameEngine
+  - Renamed `getTotal()` to `getTotalPot()` in PotManager to match usage
+  - Affects 7 locations where pot totals are retrieved
+  - This bug was preventing betting rounds from starting
+
+### Added
+- Comprehensive integration test suite (17 new tests)
+- PotManager unit tests (9 tests)
+- TripleDrawGameEngine integration tests (8 tests)
+- Testing guidelines documentation to prevent future interface mismatches
+- Better TDD practices with failing tests first approach
+
+### Improved
+- Total test coverage increased from 61 to 78 tests
+- Added interface contract testing between components
+- Established integration testing patterns
+
 ## [1.1.1] - 2025-01-26
 
 ### Fixed

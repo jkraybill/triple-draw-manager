@@ -166,10 +166,10 @@ export class PotManager extends EventEmitter {
   }
 
   /**
-   * Get total amount across all pots
+   * Get total pot amount across all pots
    * @returns {number}
    */
-  getTotal() {
+  getTotalPot() {
     return this.pots.reduce((sum, pot) => sum + pot.amount, 0);
   }
 
