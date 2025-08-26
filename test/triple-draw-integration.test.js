@@ -128,4 +128,36 @@ describe('TripleDrawGameEngine Integration Tests', () => {
       expect(testPotManager.getTotal).toBeUndefined();
     });
   });
+
+  describe('gameState.players structure', () => {
+    it('should use player IDs as keys in players object, not [object Object]', async () => {
+      const players = [
+        new Player({ id: 'alice', name: 'Alice' }),
+        new Player({ id: 'bob', name: 'Bob' }),
+        new Player({ id: 'charlie', name: 'Charlie' })
+      ];
+      
+      const gameEngine = new TripleDrawGameEngine({
+        players,
+        blinds: { small: 5, big: 10 },
+        betLimit: 10
+      });
+      
+      await gameEngine.start();
+      const gameState = gameEngine.getGameState();
+      
+      // Critical: Keys should be player IDs, not '[object Object]'
+      const keys = Object.keys(gameState.players);
+      expect(keys).toEqual(['alice', 'bob', 'charlie']);
+      expect(keys).not.toContain('[object Object]');
+      
+      // Each player should be accessible by their ID
+      expect(gameState.players.alice).toBeDefined();
+      expect(gameState.players.alice.id).toBe('alice');
+      expect(gameState.players.bob).toBeDefined();
+      expect(gameState.players.bob.id).toBe('bob');
+      expect(gameState.players.charlie).toBeDefined();
+      expect(gameState.players.charlie.id).toBe('charlie');
+    });
+  });
 });

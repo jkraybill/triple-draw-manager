@@ -667,17 +667,29 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
       currentBet: this.getCurrentBet(),
       currentPlayer: this.players[this.currentPlayerIndex]?.id,
       players: Object.fromEntries(
-        this.players.map((p) => [
-          p.id,
-          {
-            id: p.id,
-            hand: this.playerHands.get(p.id) || [],
-            chips: p.chips,
-            bet: p.bet,
-            state: p.state,
-            hasActed: p.hasActed,
-          },
-        ])
+        this.players.map((p) => {
+          // Ensure we get a string ID, not an object
+          const playerId =
+            typeof p.id === 'string'
+              ? p.id
+              : p.id && typeof p.id === 'object' && p.id.id
+                ? p.id.id
+                : String(p.id);
+
+          // Use the original p.id for Map lookup (even if it's an object)
+          // but use playerId (string) for the key
+          return [
+            playerId,
+            {
+              id: playerId,
+              hand: this.playerHands.get(p.id) || [],
+              chips: p.chips,
+              bet: p.bet,
+              state: p.state,
+              hasActed: p.hasActed,
+            },
+          ];
+        })
       ),
       drawsRemaining: this.drawsRemaining,
       limitBetting: this.config.limitBetting,

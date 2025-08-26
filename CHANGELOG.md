@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.3] - 2025-01-26
+
+### Fixed
+- Fixed critical gameState.players structure bug
+  - Players object keys were showing as `[object Object]` when Player.id was incorrectly an object
+  - Now properly extracts string ID even if Player.id is mistakenly set to an object
+  - Ensures gameState.players uses proper player ID strings as keys
+  - This bug was preventing strategies from accessing player data correctly
+
+### Added
+- Defensive coding to handle malformed Player.id values
+- Tests to prevent regression of this issue (5 new tests)
+
+### Improved
+- More robust ID extraction in getGameState method
+- Better handling of edge cases in player initialization
+
 ## [1.1.2] - 2025-01-26
 
 ### Fixed
