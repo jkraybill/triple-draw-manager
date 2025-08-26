@@ -62,9 +62,7 @@ export function getFormattedStandings(playersMap, externalEliminated = []) {
       totalChipsInPlay: active.reduce((sum, p) => sum + p.chips, 0),
       averageStack:
         active.length > 0
-          ? Math.floor(
-              active.reduce((sum, p) => sum + p.chips, 0) / active.length,
-            )
+          ? Math.floor(active.reduce((sum, p) => sum + p.chips, 0) / active.length)
           : 0,
     },
   };

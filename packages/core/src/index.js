@@ -19,7 +19,4 @@ export {
   isPlayerActive,
 } from './utils/playerStatus.js';
 
-export {
-  validateIntegerAmount,
-  ensureInteger,
-} from './utils/validation.js';
+export { validateIntegerAmount, ensureInteger } from './utils/validation.js';

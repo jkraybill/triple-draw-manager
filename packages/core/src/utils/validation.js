@@ -20,9 +20,7 @@ export function validateIntegerAmount(value, fieldName = 'amount') {
 
   // Check if it's a valid number
   if (typeof numValue !== 'number' || isNaN(numValue)) {
-    throw new Error(
-      `${fieldName} must be a number, got ${typeof value}: ${value}`,
-    );
+    throw new Error(`${fieldName} must be a number, got ${typeof value}: ${value}`);
   }
 
   // Check if it's an integer

@@ -130,9 +130,7 @@ export class Player extends WildcardEventEmitter {
       throw new Error('Cannot remove negative chips');
     }
     if (amount > this._chips) {
-      throw new Error(
-        `Insufficient chips: has ${this._chips}, needs ${amount}`,
-      );
+      throw new Error(`Insufficient chips: has ${this._chips}, needs ${amount}`);
     }
     this.chips = this._chips - amount;
     return this._chips;

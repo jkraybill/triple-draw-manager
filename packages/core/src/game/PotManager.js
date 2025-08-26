@@ -1,7 +1,7 @@
-import { Pot } from './Pot.js';
 import { EventEmitter } from 'eventemitter3';
-import { HandEvaluator } from './HandEvaluator.js';
 import { ensureInteger } from '../utils/validation.js';
+import { Pot } from './Pot.js';
+import { LowballHandEvaluator } from './LowballHandEvaluator.js';
 
 /**
  * Manages all pots in a poker game
@@ -144,15 +144,12 @@ export class PotManager extends EventEmitter {
     const maxContributionThisRound = totalAmount;
 
     // Cap the active pot at this player's maximum contribution
-    if (
-      activePot.isActive &&
-      maxContributionThisRound > currentPotContribution
-    ) {
+    if (activePot.isActive && maxContributionThisRound > currentPotContribution) {
       activePot.cap(maxContributionThisRound);
 
       // Create a side pot for remaining active players (excluding this all-in player)
       const stillActivePlayers = activePot.eligiblePlayers.filter(
-        (p) => p.id !== player.id && p.state === 'ACTIVE',
+        (p) => p.id !== player.id && p.state === 'ACTIVE'
       );
 
       // Create side pot based on the situation:
@@ -160,8 +157,7 @@ export class PotManager extends EventEmitter {
       // - For heads-up game (total 2 players), create even with 1 remaining player
       const isHeadsUpGame = this.players.length === 2;
       const shouldCreateSidePot =
-        stillActivePlayers.length >= 2 ||
-        (stillActivePlayers.length === 1 && isHeadsUpGame);
+        stillActivePlayers.length >= 2 || (stillActivePlayers.length === 1 && isHeadsUpGame);
 
       if (shouldCreateSidePot) {
         this.createPot(stillActivePlayers);
@@ -202,7 +198,7 @@ export class PotManager extends EventEmitter {
     for (const pot of this.pots) {
       // Find players eligible for this pot who are still in the hand
       let eligibleHands = allPlayerHands.filter((ph) =>
-        pot.eligiblePlayers.some((ep) => ep.id === ph.player.id),
+        pot.eligiblePlayers.some((ep) => ep.id === ph.player.id)
       );
 
       if (eligibleHands.length === 0) {
@@ -212,8 +208,8 @@ export class PotManager extends EventEmitter {
       }
 
       // Find the best hand(s) among eligible players for this pot
-      // Use HandEvaluator to compare hands properly
-      const bestHands = HandEvaluator.findWinners(eligibleHands);
+      // Use LowballHandEvaluator to compare hands properly
+      const bestHands = LowballHandEvaluator.findWinners(eligibleHands);
 
       // Distribute this pot among the winners
       if (bestHands.length > 0) {

@@ -18,8 +18,14 @@ export class Table extends WildcardEventEmitter {
 
     // Validate blinds are integers
     const validatedBlinds = {
-      small: validateIntegerAmount(config.blinds?.small ?? DEFAULT_CONFIG.DEFAULT_SMALL_BLIND, 'small blind'),
-      big: validateIntegerAmount(config.blinds?.big ?? DEFAULT_CONFIG.DEFAULT_BIG_BLIND, 'big blind'),
+      small: validateIntegerAmount(
+        config.blinds?.small ?? DEFAULT_CONFIG.DEFAULT_SMALL_BLIND,
+        'small blind'
+      ),
+      big: validateIntegerAmount(
+        config.blinds?.big ?? DEFAULT_CONFIG.DEFAULT_BIG_BLIND,
+        'big blind'
+      ),
     };
 
     this.config = {

@@ -5,9 +5,7 @@
 export class BaseDeck {
   constructor() {
     if (new.target === BaseDeck) {
-      throw new Error(
-        'BaseDeck is an abstract class and cannot be instantiated directly',
-      );
+      throw new Error('BaseDeck is an abstract class and cannot be instantiated directly');
     }
   }
 
@@ -113,21 +111,7 @@ export class BaseDeck {
    * @returns {boolean} true if valid
    */
   isValidCard(card) {
-    const validRanks = [
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      'T',
-      'J',
-      'Q',
-      'K',
-      'A',
-    ];
+    const validRanks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
     const validSuits = ['h', 'd', 'c', 's'];
     return validRanks.includes(card.rank) && validSuits.includes(card.suit);
   }

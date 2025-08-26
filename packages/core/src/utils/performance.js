@@ -154,7 +154,7 @@ export const actionPool = new ObjectPool(
     obj.action = null;
     obj.amount = 0;
     obj.timestamp = 0;
-  },
+  }
 );
 
 export const gameStatePool = new ObjectPool(
@@ -187,5 +187,5 @@ export const gameStatePool = new ObjectPool(
     obj.toCall = 0;
     obj.bigBlind = 0;
     obj.smallBlind = 0;
-  },
+  }
 );

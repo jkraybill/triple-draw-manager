@@ -16,21 +16,7 @@ export class Deck extends BaseDeck {
   reset() {
     this.cards = [];
     const suits = ['h', 'd', 'c', 's']; // Use pokersolver format
-    const ranks = [
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      'T',
-      'J',
-      'Q',
-      'K',
-      'A',
-    ]; // T instead of 10
+    const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']; // T instead of 10
 
     for (const suit of suits) {
       for (const rank of ranks) {
@@ -58,7 +44,7 @@ export class Deck extends BaseDeck {
     if (count > this.cards.length) {
       throw new Error(`Cannot draw ${count} cards, only ${this.cards.length} remaining`);
     }
-    
+
     const drawn = [];
     for (let i = 0; i < count; i++) {
       drawn.push(this.draw());

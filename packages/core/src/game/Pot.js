@@ -35,8 +35,7 @@ export class Pot {
     let allowedAmount = intAmount;
 
     if (this.maxContributionPerPlayer !== null) {
-      const remainingAllowed =
-        this.maxContributionPerPlayer - currentContribution;
+      const remainingAllowed = this.maxContributionPerPlayer - currentContribution;
       allowedAmount = Math.min(intAmount, remainingAllowed);
     }
 
@@ -125,12 +124,10 @@ export class Pot {
       name: this.name,
       amount: this.amount,
       eligiblePlayers: this.eligiblePlayers.map((p) => p.id),
-      contributions: Array.from(this.contributions.entries()).map(
-        ([player, amount]) => ({
-          playerId: player.id,
-          amount,
-        }),
-      ),
+      contributions: Array.from(this.contributions.entries()).map(([player, amount]) => ({
+        playerId: player.id,
+        amount,
+      })),
       isActive: this.isActive,
       maxContributionPerPlayer: this.maxContributionPerPlayer,
     };

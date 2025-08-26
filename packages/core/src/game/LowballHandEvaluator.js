@@ -1,4 +1,5 @@
-import { LowballRank, Ranks, RankValues } from '../constants.js';
+import { RankValues } from '../constants.js';
+import { LowballRank } from '../types/index.js';
 
 /**
  * Evaluates and compares 2-7 lowball poker hands
@@ -46,7 +47,7 @@ export class LowballHandEvaluator {
    */
   static hasStraight(ranks) {
     if (ranks.length < 5) return false;
-    
+
     // Check for any sequence of 5 consecutive ranks
     for (let i = 0; i <= ranks.length - 5; i++) {
       let isConsecutive = true;
@@ -58,14 +59,19 @@ export class LowballHandEvaluator {
       }
       if (isConsecutive) return true;
     }
-    
+
     // Note: In 2-7, A-2-3-4-5 is a straight (ace high), not a low hand
     // Check for ace-low straight (counts as a straight, which is bad)
-    if (ranks.includes(14) && ranks.includes(2) && ranks.includes(3) && 
-        ranks.includes(4) && ranks.includes(5)) {
+    if (
+      ranks.includes(14) &&
+      ranks.includes(2) &&
+      ranks.includes(3) &&
+      ranks.includes(4) &&
+      ranks.includes(5)
+    ) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -75,24 +81,24 @@ export class LowballHandEvaluator {
    * @returns {Object} Counts of each rank and hand type info
    */
   static countRanks(cards) {
-    const rankCounts = {};
-    const parsedCards = cards.map(c => this.parseCard(c));
-    
+    const counts = {};
+    const parsedCards = cards.map((c) => this.parseCard(c));
+
     for (const card of parsedCards) {
-      rankCounts[card.rank] = (rankCounts[card.rank] || 0) + 1;
+      counts[card.rank] = (counts[card.rank] || 0) + 1;
     }
-    
+
     let pairs = 0;
     let trips = 0;
     let quads = 0;
-    
-    for (const count of Object.values(rankCounts)) {
+
+    for (const count of Object.values(counts)) {
       if (count === 2) pairs++;
       else if (count === 3) trips++;
       else if (count === 4) quads++;
     }
-    
-    return { rankCounts, pairs, trips, quads };
+
+    return { rankCounts: counts, pairs, trips, quads };
   }
 
   /**
@@ -104,22 +110,24 @@ export class LowballHandEvaluator {
     if (cards.length !== 5) {
       throw new Error('Hand must contain exactly 5 cards');
     }
-    
-    const { rankCounts, pairs, trips, quads } = this.countRanks(cards);
+
+    const { pairs, trips, quads } = this.countRanks(cards);
     const hasFlush = this.hasFlush(cards);
-    
+
     // Get rank values and sort them
-    const rankValues = cards.map(c => {
-      const parsed = this.parseCard(c);
-      return RankValues[parsed.rank];
-    }).sort((a, b) => a - b);
-    
+    const rankValues = cards
+      .map((c) => {
+        const parsed = this.parseCard(c);
+        return RankValues[parsed.rank];
+      })
+      .sort((a, b) => a - b);
+
     const hasStraight = this.hasStraight(rankValues);
-    
+
     // Determine hand type (remember: worse is higher rank number)
     let handType;
     let handRank;
-    
+
     if (quads > 0) {
       handType = 'four-of-a-kind';
       handRank = LowballRank.FOUR_OF_A_KIND;
@@ -147,7 +155,7 @@ export class LowballHandEvaluator {
     } else {
       // No pair - determine which low hand it is
       const highCard = rankValues[4]; // Highest card determines the low type
-      
+
       if (highCard === 7 && rankValues.join(',') === '2,3,4,5,7') {
         handType = 'wheel';
         handRank = LowballRank.WHEEL;
@@ -174,12 +182,12 @@ export class LowballHandEvaluator {
         handRank = LowballRank.ACE_LOW;
       }
     }
-    
+
     return {
       rank: handRank,
       type: handType,
       values: rankValues,
-      cards: cards.map(c => this.parseCard(c))
+      cards: cards.map((c) => this.parseCard(c)),
     };
   }
 
@@ -192,12 +200,12 @@ export class LowballHandEvaluator {
   static compare(hand1, hand2) {
     const eval1 = this.evaluateHand(hand1);
     const eval2 = this.evaluateHand(hand2);
-    
+
     // Lower rank number is better in lowball
     if (eval1.rank !== eval2.rank) {
       return eval1.rank < eval2.rank ? -1 : 1;
     }
-    
+
     // Same hand type, compare card by card from highest to lowest
     // In lowball, we want lower cards
     for (let i = 4; i >= 0; i--) {
@@ -205,7 +213,7 @@ export class LowballHandEvaluator {
         return eval1.values[i] < eval2.values[i] ? -1 : 1;
       }
     }
-    
+
     return 0; // Exact tie
   }
 
@@ -218,23 +226,23 @@ export class LowballHandEvaluator {
     if (!hands || hands.length === 0) {
       return [];
     }
-    
+
     // Evaluate all hands
-    const evaluatedHands = hands.map(handInfo => ({
+    const evaluatedHands = hands.map((handInfo) => ({
       ...handInfo,
-      evaluation: this.evaluateHand(handInfo.cards)
+      evaluation: this.evaluateHand(handInfo.cards),
     }));
-    
+
     // Sort by hand strength (remember: lower rank is better)
     evaluatedHands.sort((a, b) => {
       const comparison = this.compare(a.cards, b.cards);
       return comparison;
     });
-    
+
     // Find all hands that tie with the best hand
     const winners = [];
     const bestHand = evaluatedHands[0];
-    
+
     for (const hand of evaluatedHands) {
       if (this.compare(bestHand.cards, hand.cards) === 0) {
         winners.push(hand);
@@ -242,7 +250,7 @@ export class LowballHandEvaluator {
         break; // No more ties
       }
     }
-    
+
     return winners;
   }
 
@@ -253,12 +261,15 @@ export class LowballHandEvaluator {
    */
   static describeHand(cards) {
     const evaluation = this.evaluateHand(cards);
-    const cardStrings = evaluation.values.map(v => {
-      for (const [rank, value] of Object.entries(RankValues)) {
-        if (value === v) return rank;
-      }
-    }).reverse().join('-');
-    
+    const cardStrings = evaluation.values
+      .map((v) => {
+        for (const [rank, value] of Object.entries(RankValues)) {
+          if (value === v) return rank;
+        }
+      })
+      .reverse()
+      .join('-');
+
     switch (evaluation.type) {
       case 'wheel':
         return `7-5-4-3-2 (the wheel)`;
