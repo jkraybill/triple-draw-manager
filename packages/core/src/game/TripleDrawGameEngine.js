@@ -22,6 +22,8 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
       timeout: config.timeout || 30000,
       limitBetting: config.limitBetting !== false, // Default to limit betting
       betLimit: config.betLimit || config.blinds.big, // Default bet size is big blind
+      fixedPositions: config.fixedPositions === true, // Don't rotate button/blinds
+      allowNegativeChips: config.allowNegativeChips === true, // Allow players to go negative
       ...config,
     };
 
@@ -176,7 +178,9 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
 
     // Post small blind
     const sbPlayer = this.players[sbIndex];
-    const sbAmount = Math.min(sbPlayer.chips, this.config.smallBlind);
+    const sbAmount = this.config.allowNegativeChips
+      ? this.config.smallBlind
+      : Math.min(sbPlayer.chips, this.config.smallBlind);
     sbPlayer.chips -= sbAmount;
     sbPlayer.bet = sbAmount;
     this.potManager.addBet(sbPlayer.id, sbAmount);
@@ -189,7 +193,9 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
 
     // Post big blind
     const bbPlayer = this.players[bbIndex];
-    const bbAmount = Math.min(bbPlayer.chips, this.config.bigBlind);
+    const bbAmount = this.config.allowNegativeChips
+      ? this.config.bigBlind
+      : Math.min(bbPlayer.chips, this.config.bigBlind);
     bbPlayer.chips -= bbAmount;
     bbPlayer.bet = bbAmount;
     bbPlayer.hasOption = true; // BB has option to raise
@@ -296,12 +302,14 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
 
       case Action.CALL: {
         const callAmount = this.getCurrentBet() - player.bet;
-        const actualCall = Math.min(callAmount, player.chips);
+        const actualCall = this.config.allowNegativeChips
+          ? callAmount
+          : Math.min(callAmount, player.chips);
         player.chips -= actualCall;
         player.bet += actualCall;
         this.potManager.addBet(player.id, actualCall);
 
-        if (player.chips === 0) {
+        if (player.chips <= 0 && !this.config.allowNegativeChips) {
           player.state = PlayerState.ALL_IN;
         }
 
