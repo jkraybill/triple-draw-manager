@@ -366,6 +366,11 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
         this.lastRaiser = player.id;
         this.raisesInRound++;
 
+        // Cap betting after 4 raises in limit games
+        if (this.config.limitBetting && this.raisesInRound >= 4) {
+          this.bettingCapped = true;
+        }
+
         // Reset hasActed for other players
         this.players.forEach((p) => {
           if (p.id !== player.id && p.state === PlayerState.ACTIVE) {
@@ -655,16 +660,20 @@ export class TripleDrawGameEngine extends WildcardEventEmitter {
     const currentBet = this.getCurrentBet();
     const toCall = currentBet - player.bet;
 
+    // Check if betting should be capped due to raise limit
+    const isBettingCapped =
+      this.bettingCapped || (this.config.limitBetting && this.raisesInRound >= 4);
+
     if (toCall === 0) {
       actions.push(Action.CHECK);
-      if (!this.bettingCapped) {
+      if (!isBettingCapped) {
         actions.push(Action.BET);
       }
     } else {
       actions.push(Action.FOLD);
       if (player.chips >= toCall) {
         actions.push(Action.CALL);
-        if (!this.bettingCapped) {
+        if (!isBettingCapped) {
           actions.push(Action.RAISE);
         }
       }
