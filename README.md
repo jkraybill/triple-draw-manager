@@ -9,16 +9,21 @@ A comprehensive Node.js library for managing Deuce-to-Seven Triple Draw Lowball 
 - ✅ Three drawing rounds with betting after each
 - ✅ Support for limit, pot-limit, and no-limit betting structures
 - ✅ Event-driven architecture for easy integration
-- ✅ Integer-validated chip management
+- ✅ Integer-validated chip management (prevents floating point errors)
 - ✅ Dead button rule support
 - ✅ Comprehensive position tracking
 - ✅ Side pot management for all-in scenarios
+- ✅ Proper 4-raise betting cap enforcement (5 total bets max per round)
+- ✅ Support for negative chips in simulation mode (allowNegativeChips option)
+- ✅ Fixed position support for deterministic testing (fixedPositions option)
 
 ## Installation
 
 ```bash
-npm install @jkraybill/triple-draw-manager
+npm install @jkraybill/triple-draw-manager@1.1.5
 ```
+
+**Note**: Version 1.1.5 includes critical bug fixes for betting cap enforcement and negative chip handling.
 
 ## Quick Start
 
@@ -123,16 +128,36 @@ The library emits various events throughout the game:
 ```javascript
 const table = new Table({
   id: 'table-1',                  // Optional table ID
-  variant: '2-7-triple-draw',      // Game variant
+  variant: '2-7-triple-draw',      // Game variant (default)
   maxPlayers: 6,                  // Maximum players (default: 6)
-  minPlayers: 2,                  // Minimum to start
+  minPlayers: 2,                  // Minimum to start (default: 2)
   blinds: {
-    small: 10,
-    big: 20
+    small: 10,                    // Small blind amount (must be integer)
+    big: 20                       // Big blind amount (must be integer)
   },
-  limitBetting: true,              // Use fixed limit betting
-  betLimit: 20,                    // Fixed bet amount
-  timeout: 30000                   // Action timeout in ms
+  limitBetting: true,             // Use fixed limit betting (default: true)
+  betLimit: 20,                   // Fixed bet amount (default: big blind)
+  timeout: 30000,                 // Action timeout in ms (default: 30000)
+  simulationMode: false,          // Fast execution without delays (default: false)
+  dealerButton: 0                 // Initial button position (default: random)
+});
+```
+
+### TripleDrawGameEngine
+
+For advanced usage, you can directly instantiate the game engine:
+
+```javascript
+const engine = new TripleDrawGameEngine({
+  players: [player1, player2, player3],
+  blinds: { small: 10, big: 20 },
+  dealerButton: 0,                // Specific button position (0-based index)
+  limitBetting: true,              // Enforce limit betting rules
+  betLimit: 20,                    // Fixed bet/raise amount for limit games
+  timeout: 30000,                  // Player action timeout in ms
+  fixedPositions: false,          // Don't rotate button/blinds between hands
+  allowNegativeChips: false,      // Allow players to go negative (for simulations)
+  simulationMode: false           // Fast execution without delays
 });
 ```
 

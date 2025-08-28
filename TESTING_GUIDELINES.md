@@ -149,11 +149,13 @@ grep -r "getTotal" packages/core/src/
 ## Success Metrics
 
 A robust test suite should:
-- ✅ **78+ tests passing** (current baseline)
+- ✅ **94+ tests passing** (current baseline as of v1.1.5)
 - ✅ **Integration tests covering all component pairs**
 - ✅ **Interface contract tests for all public APIs**
 - ✅ **Regression tests for critical bugs**
 - ✅ **No method name mismatches possible**
+- ✅ **Betting cap enforcement tests**
+- ✅ **Negative chip scenario tests**
 
 ## Remember
 

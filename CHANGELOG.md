@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.5] - 2025-01-27
+
+### Fixed
+- Fixed critical betting cap enforcement bug in limit games
+  - `bettingCapped` is now properly set to `true` after the 4th raise
+  - RAISE action is correctly unavailable in `validActions` after 4 raises
+  - Prevents UI confusion where RAISE appeared available but would throw error
+  - Maintains standard poker limit rules (max 5 total bets per round)
+
+### Added
+- Comprehensive betting cap tests (6 new tests)
+- Proper enforcement of 4-raise limit at API level
+- Dynamic cap checking in `getValidActions()` method
+
+### Impact
+- Bots/AI can now rely on `validActions` to determine if raising is allowed
+- No need for defensive error handling around betting cap errors
+- Simplifies raise logic - just check if RAISE is in `validActions`
+
 ## [1.1.4] - 2025-01-26
 
 ### Fixed
